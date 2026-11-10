@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#150f2b">
+<title>For you</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;600&display=swap">
+<style>
+:root{--bg:#f6f3fb;--card:#fff;--ink:#2a1b3d;--mute:#6f6485;--rose:#c93a65;--ok:#16907f;--line:#e4dcf0;--glow:rgba(201,58,101,.14);
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#150f2b;--card:#201937;--ink:#f3eefb;--mute:#a99dc4;--rose:#ff6f98;--ok:#4fd1bd;--line:#352b55;--glow:rgba(255,111,152,.18)}}
+:root[data-theme="dark"]{--bg:#150f2b;--card:#201937;--ink:#f3eefb;--mute:#a99dc4;--rose:#ff6f98;--ok:#4fd1bd;--line:#352b55;--glow:rgba(255,111,152,.18)}
+*{box-sizing:border-box;margin:0}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{background:var(--bg);color:var(--ink);font:400 16px/1.55 Figtree,system-ui,sans-serif;min-height:100dvh;-webkit-text-size-adjust:100%}
+h1,h2,.big,.gtime{font-family:"Bricolage Grotesque",Figtree,system-ui,sans-serif;letter-spacing:-.02em}
+button{font:600 18px Figtree,system-ui,sans-serif;border:0;border-radius:999px;padding:14px 30px;min-height:52px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;transition:transform .25s}
+button:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.yes{background:var(--rose);color:#fff}
+.no{background:var(--line);color:var(--ink)}
+
+/* lock-screen intro */
+.gate{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:24px;text-align:center;background:radial-gradient(120% 80% at 50% 0%,var(--glow),transparent 60%),var(--bg);transition:opacity .9s,transform .9s}
+.gate.out{opacity:0;transform:scale(1.04);pointer-events:none}
+.gtime{font-size:clamp(76px,22vw,128px);font-weight:800;line-height:1}
+.gdate{color:var(--mute);margin-bottom:26px}
+.gmsg{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px 18px;width:min(340px,100%);text-align:left;box-shadow:0 0 40px var(--glow);margin-bottom:22px}
+.gmsg b{display:block;font-size:15px}
+.gmsg span{color:var(--mute);font-size:15px}
+
+main{max-width:960px;margin:0 auto;padding:18px 14px 110px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;color:var(--mute);font-size:14px;margin-bottom:16px}
+.top b{color:var(--ok);font-weight:600}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--ok);margin-right:7px}
+.hero{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:24px 20px 4px;overflow:hidden;box-shadow:0 0 50px var(--glow)}
+.hero h1{font-size:clamp(34px,8vw,58px);line-height:1.05;font-weight:800}
+.hero p{color:var(--mute);margin-top:10px;max-width:46ch}
+.ecg{display:block;width:100%;height:96px;margin-top:10px}
+.ecg path{fill:none;stroke:var(--rose);stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1400;stroke-dashoffset:1400;animation:draw 5s linear infinite}
+@keyframes draw{to{stroke-dashoffset:0}}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin-top:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px}
+.card .big{font-size:28px;font-weight:800;line-height:1.15}
+.card span{color:var(--mute);font-size:14px}
+.wide{grid-column:1/-1}
+.wide h2{font-size:21px;margin-bottom:8px}
+.note p{font-size:18px;line-height:1.65}
+ul{list-style:none;padding:0}
+li{padding:11px 0;border-top:1px solid var(--line)}
+li:first-child{border-top:0}
+li b{display:block}
+li small{color:var(--mute);font-size:15px}
+.tl li{display:flex;gap:14px}
+.tl time{color:var(--mute);min-width:96px;font-size:14px;padding-top:2px}
+.rev>*{opacity:0}
+.rev.in>*{animation:up .7s both;animation-delay:calc(var(--i) * 110ms)}
+@keyframes up{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+
+.banner{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);width:min(520px,calc(100% - 24px));background:var(--rose);color:#fff;border-radius:999px;font-size:16px;box-shadow:0 10px 30px var(--glow);display:none}
+.banner.on{display:block;animation:bump 2.6s 1.2s infinite}
+@keyframes bump{50%{transform:translateX(-50%) translateY(-4px)}}
+.veil{position:fixed;inset:0;z-index:10;background:rgba(15,8,32,.78);display:none;align-items:center;justify-content:center;padding:16px}
+.veil.on{display:flex}
+.modal{background:var(--card);border-radius:26px;padding:28px 20px;width:min(480px,100%);text-align:center;box-shadow:0 0 70px var(--glow)}
+.modal h2{font-size:clamp(28px,7vw,38px);line-height:1.12;font-weight:800}
+.modal p{color:var(--mute);margin-top:10px}
+.prog{height:10px;border-radius:10px;background:var(--line);margin:22px 0 8px;overflow:hidden}
+.prog b{display:block;height:100%;width:0;background:var(--rose);transition:width .25s}
+.step{font-size:14px;color:var(--mute);min-height:22px}
+.ask{display:none}
+.btns{display:flex;gap:16px;justify-content:center;align-items:center;margin-top:26px;min-height:140px;flex-wrap:wrap}
+.receipt{display:inline-block;margin-top:20px;border:1px dashed var(--line);border-radius:12px;padding:8px 14px;font-size:14px;color:var(--mute)}
+canvas{position:fixed;inset:0;pointer-events:none;z-index:30;width:100%;height:100%}
+@media (max-width:560px){.tl time{min-width:84px}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.ecg path{stroke-dashoffset:0}.rev>*{opacity:1}}
+</style>
+</head>
+<body>
+
+<section class="gate" id="gate">
+  <div class="gtime" id="gtime"></div>
+  <div class="gdate" id="gdate"></div>
+  <div class="gmsg"><b id="gfrom">New message</b><span>I made something just for you.</span></div>
+  <button class="yes" id="enter">Open</button>
+</section>
+
+<main id="main" class="rev">
+  <div class="top"><span><span class="dot"></span><b>Everything is running well</b></span><span id="clock"></span></div>
+
+  <section class="hero">
+    <h1 id="greet">Hello</h1>
+    <p>This is your dashboard. It shows what matters most to me, and that is you.</p>
+    <svg class="ecg" viewBox="0 0 600 120" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0 70 H120 L140 70 L155 35 L172 100 L190 20 L208 70 H300 L318 70 L333 42 L350 94 L368 26 L386 70 H600"/>
+    </svg>
+  </section>
+
+  <div class="grid">
+    <div class="card"><div class="big" id="days">Every day</div><span id="daysLbl">Time I’ve chosen you</span></div>
+    <div class="card"><div class="big">You</div><span>The first person I want to tell good news</span></div>
+    <div class="card"><div class="big">Home</div><span>Where I feel most at ease: with you</span></div>
+
+    <div class="card wide note"><h2>A note for you</h2><p id="note"></p></div>
+    <div class="card wide"><h2>What I value in you</h2><ul id="values"></ul></div>
+    <div class="card wide"><h2>Our timeline</h2><ul class="tl" id="timeline"></ul></div>
+  </div>
+</main>
+
+<button class="banner" id="open">1 update is waiting for you. Tap to review.</button>
+
+<div class="veil" id="veil" role="dialog" aria-modal="true">
+  <div class="modal">
+    <div id="load">
+      <h2>Update available: Our next chapter</h2>
+      <p>This will only take a moment.</p>
+      <div class="prog"><b id="bar"></b></div>
+      <div class="step" id="step">Preparing update…</div>
+    </div>
+    <div class="ask" id="ask">
+      <h2>Will you marry me?</h2>
+      <p id="askp">I want to spend my life with you.</p>
+      <div class="btns">
+        <button class="yes" id="yes">Yes</button>
+        <button class="no" id="no">Not now</button>
+      </div>
+    </div>
+    <div class="ask" id="done">
+      <h2 id="thanks">Thank you.</h2>
+      <p id="sign">I love you.</p>
+      <div class="receipt" id="receipt"></div>
+    </div>
+  </div>
+</div>
+<canvas id="c"></canvas>
+
+<script>
+// ============ EDIT THIS PART ============
+const HER_NAME   = "Samman";
+const YOUR_NAME  = "";        // your name, e.g. "Ali"
+const START_DATE = "";        // day you got together, e.g. "2023-03-14" (leave empty to hide the counter)
+const NTFY_TOPIC = "samman-yes-5b70c5d8e09b";       // optional phone alert: a long secret name like "samman-yes-8f3k29x"; install the ntfy app and subscribe to it
+const WEB3FORMS_KEY = "";    // optional email alert: free key from web3forms.com, sent to your Gmail
+const NOTE = "{name}, there is no one else I want to build my life with. This page is small, but what it says is not.";
+const VALUES = [              // [quality, short line] - replace with your own words
+  ["Kindness", "You care about people without making a show of it."],
+  ["Honesty", "I can say anything to you and be understood."],
+  ["Patience", "You stayed calm on the days I made it hard."],
+  ["Strength", "You make me want to be better."]
+];
+const TIMELINE = [            // [when, what happened] - replace with your real dates
+  ["The beginning", "The day we met."],
+  ["Along the way", "The moments that made me sure."],
+  ["Today", "I still choose you."]
+];
+// ========================================
+
+const $ = id => document.getElementById(id);
+const buzz = p => { try { navigator.vibrate && navigator.vibrate(p); } catch (e) {} };
+const now = new Date();
+$("gtime").textContent = now.toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"});
+$("gdate").textContent = now.toLocaleDateString([], {weekday:"long", day:"numeric", month:"long"});
+$("gfrom").textContent = YOUR_NAME ? "New message from " + YOUR_NAME : "New message";
+const hr = now.getHours();
+const part = hr < 12 ? "Good morning" : hr < 18 ? "Good afternoon" : "Good evening";
+$("greet").textContent = part + ", " + HER_NAME;
+$("note").textContent = NOTE.replace("{name}", HER_NAME);
+const tick = () => {
+  const t = new Date().toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"});
+  $("clock").textContent = t; $("gtime").textContent = t;
+};
+tick(); setInterval(tick, 1000);
+
+VALUES.forEach(v => { const li = document.createElement("li"); li.innerHTML = "<b></b><small></small>";
+  li.querySelector("b").textContent = v[0]; li.querySelector("small").textContent = v[1]; $("values").appendChild(li); });
+TIMELINE.forEach(t => { const li = document.createElement("li"); li.innerHTML = "<time></time><span></span>";
+  li.querySelector("time").textContent = t[0]; li.querySelector("span").textContent = t[1]; $("timeline").appendChild(li); });
+
+if (START_DATE) {
+  const d = Math.floor((Date.now() - new Date(START_DATE)) / 864e5);
+  if (d > 0) {
+    $("daysLbl").textContent = "Days with you, and counting";
+    const t0 = performance.now();
+    (function f(t){ const p = Math.min(1, (t - t0) / 1800);
+      $("days").textContent = Math.round(d * (1 - Math.pow(1 - p, 3))).toLocaleString();
+      if (p < 1) requestAnimationFrame(f); })(t0);
+  }
+}
+
+// open: lock screen -> dashboard
+$("enter").onclick = () => {
+  buzz(30);
+  $("gate").classList.add("out");
+  [...$("main").children].forEach((el, i) => el.style.setProperty("--i", i));
+  $("main").classList.add("in");
+  [...document.querySelectorAll(".grid > *")].forEach((el, i) => el.style.setProperty("--i", i + 3));
+  setTimeout(() => $("open").classList.add("on"), 2500);
+};
+
+// update flow
+const steps = ["Preparing update…","Saving our memories…","Getting everything ready…","Almost done. Waiting for your answer…"];
+$("open").onclick = () => {
+  $("veil").classList.add("on"); $("open").classList.remove("on");
+  let p = 0;
+  const iv = setInterval(() => {
+    p = Math.min(99, p + 2 + Math.random() * 5);
+    $("bar").style.width = p + "%";
+    $("step").textContent = steps[Math.min(steps.length - 1, Math.floor(p / 26))] + " " + Math.floor(p) + "%";
+    if (p >= 99) { clearInterval(iv); setTimeout(() => { $("load").style.display = "none"; $("ask").style.display = "block"; buzz(40); }, 900); }
+  }, 140);
+};
+
+const show = id => { ["ask","done"].forEach(x => $(x).style.display = "none"); $(id).style.display = "block"; };
+let tries = 0, last = 0;
+const nos = ["Not now","Are you sure?","Really?","Think again","Please?","Last chance","Okay, okay…"];
+const dodge = e => {
+  if (e && e.cancelable) e.preventDefault();
+  const t = Date.now(); if (t - last < 250) return; last = t;
+  const b = $("no"), y = $("yes");
+  tries++; buzz(15);
+  if (tries > 7) { b.style.display = "none"; $("askp").textContent = "Only one answer is left."; y.style.transform = "scale(1.25)"; return; }
+  b.textContent = nos[Math.min(tries, nos.length - 1)];
+  b.style.transition = "none"; b.style.transform = "none"; void b.offsetWidth;
+  const base = b.getBoundingClientRect(), yr = y.getBoundingClientRect(), m = 10;
+  b.style.transition = "";
+  let tx = 0, ty = 0;
+  for (let i = 0; i < 12; i++) {
+    const nx = m + Math.random() * Math.max(1, innerWidth - base.width - 2 * m);
+    const ny = m + Math.random() * Math.max(1, innerHeight - base.height - 2 * m);
+    tx = nx - base.left; ty = ny - base.top;
+    const hit = nx < yr.right + 12 && nx + base.width > yr.left - 12 && ny < yr.bottom + 12 && ny + base.height > yr.top - 12;
+    if (!hit) break;
+  }
+  b.style.transform = "translate(" + tx + "px," + ty + "px)";
+  y.style.transform = "scale(" + Math.min(1.25, 1 + tries * .04) + ")";
+};
+$("no").addEventListener("pointerenter", dodge);
+$("no").addEventListener("pointerdown", dodge);
+$("no").addEventListener("touchstart", dodge, {passive:false});
+$("no").addEventListener("click", e => { e.preventDefault(); dodge(e); });
+
+$("yes").onclick = () => {
+  $("thanks").textContent = "Thank you, " + HER_NAME + ".";
+  $("sign").textContent = YOUR_NAME ? "I love you. " + YOUR_NAME : "I love you.";
+  const d = new Date();
+  $("receipt").textContent = "Answer saved: Yes · " + d.toLocaleDateString([], {day:"numeric", month:"long", year:"numeric"}) + ", " + d.toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"});
+  show("done"); buzz([60, 40, 60, 40, 120]); burst(); notifyYes();
+};
+function notifyYes(){
+  const msg = HER_NAME + " pressed Yes on " + new Date().toLocaleString();
+  try { if (NTFY_TOPIC) fetch("https://ntfy.sh/" + NTFY_TOPIC, {method:"POST", body:msg, headers:{Title:"She said yes"}, keepalive:true}).catch(() => {}); } catch (e) {}
+  try { if (WEB3FORMS_KEY) fetch("https://api.web3forms.com/submit", {method:"POST", headers:{"Content-Type":"application/json", Accept:"application/json"}, body:JSON.stringify({access_key:WEB3FORMS_KEY, subject:"She said yes", from_name:"Proposal page", message:msg}), keepalive:true}).catch(() => {}); } catch (e) {}
+}
+function burst(){
+  const c = $("c"), x = c.getContext("2d"), d = devicePixelRatio || 1;
+  c.width = innerWidth * d; c.height = innerHeight * d;
+  const cols = ["#ff6f98","#c93a65","#ffd1dc","#f4a3b8"];
+  const ps = Array.from({length:90}, () => ({x:c.width/2, y:c.height*.6, vx:(Math.random()-.5)*14*d, vy:(-Math.random()*15-4)*d, s:(12+Math.random()*16)*d, c:cols[Math.floor(Math.random()*cols.length)], ch:Math.random() < .6 ? "\u2764" : "\u2726"}));
+  (function f(){
+    x.clearRect(0,0,c.width,c.height); let alive = 0;
+    ps.forEach(p => { p.vy += .28*d; p.x += p.vx; p.y += p.vy; if (p.y < c.height + 40) alive++; x.fillStyle = p.c; x.font = p.s + "px serif"; x.fillText(p.ch, p.x, p.y); });
+    if (alive) requestAnimationFrame(f); else x.clearRect(0,0,c.width,c.height);
+  })();
+}
+</script>
+</body>
+</html>
